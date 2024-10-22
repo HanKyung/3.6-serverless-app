@@ -1,0 +1,39 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: stphntn
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: aws-node-stephen
+service: aws-node-http-api-project-stephen
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  profile: serverless
+
+functions:
+  hello:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+# Insert raw CloudFormation (resources, outputs…) in the deployed template
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: usersTable-Stephen
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+plugins:
+  - serverless-offline
